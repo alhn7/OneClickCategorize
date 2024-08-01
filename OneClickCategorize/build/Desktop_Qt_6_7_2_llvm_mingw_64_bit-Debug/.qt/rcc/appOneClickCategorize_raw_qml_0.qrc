@@ -1,0 +1,27 @@
+<RCC>
+  <qresource prefix="/qt/qml/OneClickCategorize/">
+    <file alias="Main.qml">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/Main.qml</file>
+    <file alias="texts/HeadingText.qml">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/HeadingText.qml</file>
+    <file alias="texts/SubheadingText.qml">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/SubheadingText.qml</file>
+    <file alias="components/InputArea.qml">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/components/InputArea.qml</file>
+    <file alias="texts/InputText.qml">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/InputText.qml</file>
+    <file alias="components/Button.qml">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/components/Button.qml</file>
+    <file alias="texts/ButtonText.qml">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/ButtonText.qml</file>
+    <file alias="assets/fonts/Poppins-Black.ttf">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/fonts/Poppins-Black.ttf</file>
+    <file alias="assets/fonts/Poppins-Bold.ttf">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/fonts/Poppins-Bold.ttf</file>
+    <file alias="assets/fonts/Poppins-Italic.ttf">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/fonts/Poppins-Italic.ttf</file>
+    <file alias="assets/fonts/Poppins-Medium.ttf">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/fonts/Poppins-Medium.ttf</file>
+    <file alias="assets/fonts/Poppins-Regular.ttf">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/fonts/Poppins-Regular.ttf</file>
+    <file alias="assets/fonts/Poppins-SemiBold.ttf">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/fonts/Poppins-SemiBold.ttf</file>
+    <file alias="assets/fonts/Poppins-Thin.ttf">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/fonts/Poppins-Thin.ttf</file>
+    <file alias="assets/icons/icon_email.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/icons/icon_email.png</file>
+    <file alias="assets/icons/icon_password.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/icons/icon_password.png</file>
+    <file alias="assets/icons/icon_email.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/icons/icon_email.png</file>
+    <file alias="assets/icons/icon_password.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/icons/icon_password.png</file>
+    <file alias="assets/icons/icon_default.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/icons/icon_default.png</file>
+    <file alias="assets/icons/icon_password_hidden.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/icons/icon_password_hidden.png</file>
+    <file alias="assets/icons/icon_password_visible.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/icons/icon_password_visible.png</file>
+    <file alias="assets/buttons/button_auth_with_google.png">C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/assets/buttons/button_auth_with_google.png</file>
+  </qresource>
+</RCC>
+

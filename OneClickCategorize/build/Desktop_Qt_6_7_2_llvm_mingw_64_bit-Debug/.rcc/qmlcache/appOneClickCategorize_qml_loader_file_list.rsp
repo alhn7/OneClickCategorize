@@ -1,0 +1,11 @@
+--resource
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/build/Desktop_Qt_6_7_2_llvm_mingw_64_bit-Debug/.qt/rcc/qmake_OneClickCategorize.qrc
+--resource
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/build/Desktop_Qt_6_7_2_llvm_mingw_64_bit-Debug/.qt/rcc/appOneClickCategorize_raw_qml_0.qrc
+/qt/qml/OneClickCategorize/Main.qml
+/qt/qml/OneClickCategorize/texts/HeadingText.qml
+/qt/qml/OneClickCategorize/texts/SubheadingText.qml
+/qt/qml/OneClickCategorize/components/InputArea.qml
+/qt/qml/OneClickCategorize/texts/InputText.qml
+/qt/qml/OneClickCategorize/components/Button.qml
+/qt/qml/OneClickCategorize/texts/ButtonText.qml

@@ -1,0 +1,16 @@
+--bare
+-I
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/build/Desktop_Qt_6_7_2_llvm_mingw_64_bit-Debug
+-I
+C:/Qt/6.7.2/llvm-mingw_64/./qml
+--resource
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/build/Desktop_Qt_6_7_2_llvm_mingw_64_bit-Debug/.qt/rcc/qmake_OneClickCategorize.qrc
+--resource
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/build/Desktop_Qt_6_7_2_llvm_mingw_64_bit-Debug/.qt/rcc/appOneClickCategorize_raw_qml_0.qrc
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/Main.qml
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/HeadingText.qml
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/SubheadingText.qml
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/components/InputArea.qml
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/InputText.qml
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/components/Button.qml
+C:/Users/csstu/Desktop/_/Projects/SaaS/OneClickCategorize/OneClickCategorize/texts/ButtonText.qml
