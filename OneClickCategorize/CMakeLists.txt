@@ -31,6 +31,10 @@ qt_add_qml_module(appOneClickCategorize
         QML_FILES components/Button.qml
         QML_FILES texts/ButtonText.qml
         RESOURCES assets/buttons/button_auth_with_google.png
+        QML_FILES screens/LoginScreen.qml
+        QML_FILES screens/Dashboard.qml
+        QML_FILES components/DashboardState_NoRecentRun.qml
+        RESOURCES assets/logo/logo_placeholder.png
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
