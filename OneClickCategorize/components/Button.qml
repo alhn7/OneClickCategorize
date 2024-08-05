@@ -7,15 +7,18 @@ import "../texts" as Texts
 Rectangle{
     property int _width: 297
     property string _text: "DefText1"
+    property string _color: "#A7FB1F"
+    property string _textColor: "#353536"
+    property string _borderColor: "#353536"
 
     width: _width
     height: 45
 
     radius: 9
-    color: "#A7FB1F"
+    color: _color
 
     border{
-        color: "#353536"
+        color: _borderColor
         width: 1
     }
 
@@ -26,7 +29,7 @@ Rectangle{
     Texts.ButtonText{
         id: buttonText
         _text: ""
-
+        _color: _textColor
         anchors{
             centerIn: parent
         }

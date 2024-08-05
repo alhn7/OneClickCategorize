@@ -16,12 +16,12 @@ Rectangle{
         Texts.SubheadingText{
             _text: "No recents run..."
 
-            anchors.horizontalCenter: parent.horizontalCenter
+            // anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Components.Button{
             _text: "Categorize a Folder"
-            anchors.horizontalCenter: parent.horizontalCenter
+            // anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 }

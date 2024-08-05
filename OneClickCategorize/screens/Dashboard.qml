@@ -15,9 +15,17 @@ Item {
     }
 
 
+    Components.DashboardState_HasRecentRun{
+        anchors{
+            bottom: parent.bottom
+            bottomMargin: 20
+            left: parent.left
+            leftMargin: 20
+        }
+    }
 
     Components.DashboardState_NoRecentRun{
         anchors.centerIn: parent
+        visible: false
     }
-
 }

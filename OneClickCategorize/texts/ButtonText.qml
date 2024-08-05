@@ -7,7 +7,7 @@ Text{
     text: _text
     color: _color
     font{
-        family: poppinsSemiBold.name
+        family: poppinsMedium.name
         pixelSize: 12
 
     }
