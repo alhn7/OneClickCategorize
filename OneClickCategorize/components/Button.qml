@@ -6,13 +6,14 @@ import "../texts" as Texts
 
 Rectangle{
     property int _width: 297
+    property int _height: 45
     property string _text: "DefText1"
     property string _color: "#A7FB1F"
     property string _textColor: "#353536"
     property string _borderColor: "#353536"
 
     width: _width
-    height: 45
+    height: _height
 
     radius: 9
     color: _color
