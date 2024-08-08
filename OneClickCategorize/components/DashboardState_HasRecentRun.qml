@@ -155,7 +155,6 @@ Rectangle{
 
             RowLayout{
                 id: foldersRowLayout
-                property int _folderCount:2
 
                 width: parent.width
                 height: parent.height
@@ -166,32 +165,13 @@ Rectangle{
 
                 Folder{
                     _folderName: "TODO"
-                    _folderCounter: _folderCounter
-                }
-
-                Folder{
-                    _folderName: "TODO"
-                    _folderCounter: _folderCounter
                 }
                 Folder{
                     _folderName: "TODO"
-                    _folderCounter: _folderCounter
-                }
-
-                Folder{
-                    _folderName: "TODO"
-                    _folderCounter: _folderCounter
                 }
                 Folder{
                     _folderName: "TODO"
-                    _folderCounter: _folderCounter
                 }
-
-                Folder{
-                    _folderName: "TODO"
-                    _folderCounter: _folderCounter
-                }
-
 
             }
         }
