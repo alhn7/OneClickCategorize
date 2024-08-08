@@ -5,7 +5,7 @@ Rectangle{
     property string _folderColor: "#353536"
 
     width: 190
-    height: parent.height
+    height: foldersRowLayoutFrame.height
 
 
     color: "transparent"

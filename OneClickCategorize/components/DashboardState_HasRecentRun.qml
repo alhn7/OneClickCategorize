@@ -141,6 +141,7 @@ Rectangle{
         }
 
         Rectangle{
+            id: foldersRowLayoutFrame
             width: parent.width * 0.675
             height: parent.height * 0.675
             color: "transparent"
@@ -156,23 +157,24 @@ Rectangle{
             RowLayout{
                 id: foldersRowLayout
 
-                width: parent.width
-                height: parent.height
-
                 spacing: 10
 
-                anchors.fill: parent
 
                 Folder{
                     _folderName: "TODO"
+                    Layout.alignment: Qt.AlignLeft
+                    Layout.fillWidth: true
                 }
                 Folder{
                     _folderName: "TODO"
+                    Layout.alignment: Qt.AlignLeft
+                    Layout.fillWidth: true
                 }
                 Folder{
                     _folderName: "TODO"
+                    Layout.alignment: Qt.AlignLeft
+                    Layout.fillWidth: true
                 }
-
             }
         }
 
