@@ -1,6 +1,9 @@
 import QtQuick 2.15
 import QtQuick.Layouts
+import QtQuick.Controls 2.15
+
 import "../texts/" as Texts
+import "./" as Components
 
 
 Rectangle{
@@ -19,7 +22,7 @@ Rectangle{
             left: parent.left
             leftMargin: 20
             top: parent.top
-            topMargin: 15
+            topMargin: 10
         }
     }
 
@@ -65,7 +68,7 @@ Rectangle{
                 horizontalCenter: parent.horizontalCenter
             }
 
-            Button{
+            Components.Button{
                 _text: "Categorize Desktop"
                 _width: 200
             }
@@ -74,7 +77,7 @@ Rectangle{
                 _text: "or"
             }
 
-            Button{
+            Components.Button{
                 _text: "Choose Another Folder"
                 _width: 220
                 _color: "#0B0C0E"
@@ -87,7 +90,7 @@ Rectangle{
     Rectangle{//Step 2 Container
         id: stepTwoContainerRectangle
         width: parent.width - 40
-        height: 220
+        height: 230
 
         color: "transparent"
         radius: 10
@@ -104,7 +107,7 @@ Rectangle{
             leftMargin: 20
         }
 
-        Button{
+        Components.Button{
             _text: "+ Add Folder"
             _width: 100
             _height: 25
@@ -143,37 +146,68 @@ Rectangle{
         Rectangle{
             id: foldersRowLayoutFrame
             width: parent.width * 0.675
-            height: parent.height * 0.675
+            height: parent.height * 0.675 + 30 //30 -> Horizontal Scrollbar
             color: "transparent"
             clip: true
 
             anchors{
                 top: stepTwoSubQuestionText.bottom
-                topMargin: 12
+                topMargin: 6
                 left: parent.left
                 leftMargin: 12
             }
 
-            RowLayout{
+            ListView {
                 id: foldersRowLayout
 
+                orientation: ListView.Horizontal
                 spacing: 10
 
+                width: parent.width
+                height: parent.height - 40 // -30 -> Horizontal Scrollbar
 
-                Folder{
-                    _folderName: "TODO"
+                // ListModel ile verileri tanımlıyoruz
+                model: ListModel {
+                    ListElement { folderName: "TODO1" }
+                    ListElement { folderName: "TODO2" }
+                    ListElement { folderName: "TODO3" }
+                }
+
+                delegate: Folder {
+                    _folderName: folderName
                     Layout.alignment: Qt.AlignLeft
                     Layout.fillWidth: true
                 }
-                Folder{
-                    _folderName: "TODO"
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.fillWidth: true
-                }
-                Folder{
-                    _folderName: "TODO"
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.fillWidth: true
+
+                ScrollBar.horizontal: ScrollBar {
+                    height: 10
+                    active: false
+
+                    anchors{
+                        top: foldersRowLayout.bottom
+                        topMargin: 5
+                        horizontalCenter: parent.horizontalCenter
+                    }
+
+                    // Custom background for the scrollbar
+                    background: Rectangle {
+                        color: "#141414"
+                        radius: 0
+                    }
+
+                    // Custom handle for the scrollbar
+                    contentItem: Rectangle {
+                        height: parent.height - 3
+
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "#1E1E1E"  // Handle color
+                        radius: 5
+
+                        border{
+                            width: 1
+                            color: "#353536"
+                        }
+                    }
                 }
             }
         }
@@ -195,7 +229,7 @@ Rectangle{
                 right: parent.right
                 rightMargin: 10
                 top: stepTwoSubQuestionText.bottom
-                topMargin: 12
+                topMargin: 6
             }
         }
 
