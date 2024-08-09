@@ -180,8 +180,8 @@ Rectangle{
                 }
 
                 ScrollBar.horizontal: ScrollBar {
-                    height: 10
-                    active: false
+                    height: 15
+
 
                     anchors{
                         top: foldersRowLayout.bottom
@@ -197,17 +197,18 @@ Rectangle{
 
                     // Custom handle for the scrollbar
                     contentItem: Rectangle {
-                        height: parent.height - 3
+                        height: parent.height - 4
 
                         anchors.verticalCenter: parent.verticalCenter
                         color: "#1E1E1E"  // Handle color
-                        radius: 5
+                        radius: 0
 
                         border{
                             width: 1
-                            color: "#353536"
+                            color: "#A7FB1F"
                         }
                     }
+
                 }
             }
         }
