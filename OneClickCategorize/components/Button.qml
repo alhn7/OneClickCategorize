@@ -1,6 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-// import QtQuick.Animations 1.0  // Bu satırı kaldırın veya yorum satırı yapın
 
 import "../texts" as Texts
 
@@ -13,9 +12,12 @@ Rectangle {
     property string _textColor: "#353536"
     property string _borderColor: "#353536"
 
+    signal clicked()
+    
+    
     width: _width
     height: _height
-    radius: 9  // Başlangıç radius değeri
+    radius: 9 
     color: _color
     border.color: _borderColor
     border.width: 1
@@ -25,7 +27,6 @@ Rectangle {
         _text: root._text
         _color: _textColor
         anchors.centerIn: parent
-        // Font size increase property'sini kaldırdık
     }
 
     state: "default"
@@ -50,7 +51,7 @@ Rectangle {
             from: "*"; to: "*"
             PropertyAnimation { properties: "radius,color,scale"; duration: 200; easing.type: Easing.InOutQuad }
         }
-    ] 
+    ]
 
     MouseArea {
         anchors.fill: parent
@@ -63,6 +64,7 @@ Rectangle {
                 root.state = "hover"
             else
                 root.state = "default"
+            root.clicked()  
         }
     }
 }

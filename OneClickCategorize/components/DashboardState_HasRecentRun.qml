@@ -107,16 +107,27 @@ Rectangle{
             leftMargin: 20
         }
 
-        Components.Button{
+        ListModel {
+            id: foldersModel
+            ListElement { folderName: "TODO1" }
+            ListElement { folderName: "TODO2" }
+            ListElement { folderName: "TODO3" }
+        }
+
+        Components.Button {
             _text: "+ Add Folder"
             _width: 100
             _height: 25
 
-            anchors{
+            anchors {
                 right: parent.right
                 rightMargin: 10
                 top: parent.top
                 topMargin: 10
+            }
+
+            onClicked: {
+                foldersModel.append({ folderName: "New Folder " + (foldersModel.count + 1) })
             }
         }
 
@@ -166,12 +177,7 @@ Rectangle{
                 width: parent.width
                 height: parent.height - 40 // -30 -> Horizontal Scrollbar
 
-                // ListModel ile verileri tanımlıyoruz
-                model: ListModel {
-                    ListElement { folderName: "TODO1" }
-                    ListElement { folderName: "TODO2" }
-                    ListElement { folderName: "TODO3" }
-                }
+                model: foldersModel
 
                 delegate: Folder {
                     _folderName: folderName
@@ -233,10 +239,5 @@ Rectangle{
                 topMargin: 6
             }
         }
-
-
-
-
-
     }
 }
