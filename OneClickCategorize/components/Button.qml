@@ -50,7 +50,7 @@ Rectangle {
             from: "*"; to: "*"
             PropertyAnimation { properties: "radius,color,scale"; duration: 200; easing.type: Easing.InOutQuad }
         }
-    ]
+    ] 
 
     MouseArea {
         anchors.fill: parent
