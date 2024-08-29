@@ -11,7 +11,7 @@ Window{
 
     visible: true
     title: qsTr("Folder/Desktop Categorizer")
-    flags: Qt.FramelessWindowHint
+    flags: Qt.FramelessWindowHint | Qt.Window
 
 
     FontLoader {
