@@ -56,3 +56,6 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+OneClickCategorize/build/**
+OneClickCategorize/build/Desktop_Qt_6_7_2_llvm_mingw_64_bit-Debug/.cmake/api/v1/reply/codemodel-v2-78752473857f432391f7.json

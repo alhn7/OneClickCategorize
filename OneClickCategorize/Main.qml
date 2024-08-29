@@ -58,9 +58,4 @@ Window{
             anchors.centerIn: parent
         }
     }
-
-
-
-
-
 }

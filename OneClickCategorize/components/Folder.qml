@@ -15,4 +15,15 @@ Rectangle{
         width: 1
         color: _folderColor
     }
+
+    FolderTextInput{
+        _folderText: _folderName
+
+        anchors{
+            top: parent.top
+            topMargin: 5
+            horizontalCenter: parent.horizontalCenter
+        }
+    }
+
 }
