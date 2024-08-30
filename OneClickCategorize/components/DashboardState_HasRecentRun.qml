@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls 2.15
+import QtQuick.Dialogs
+import Qt.labs.platform 1.1 // For FolderDialog and StandardPaths
 
 import "../texts/" as Texts
 import "./" as Components
@@ -39,6 +41,27 @@ Rectangle{
             color: "#353536"
         }
 
+        state: "initial"
+
+        states: [
+            State {
+                name: "initial"
+                PropertyChanges { target: stepOneContainerRectangle; border.color: "#353536"; height: 100 }
+                PropertyChanges { target: buttonRow; visible: true }
+                PropertyChanges { target: selectedPathText; visible: false }
+            },
+            State {
+                name: "completed"
+                PropertyChanges { target: stepOneContainerRectangle; border.color: "#A7FB1F"; height: 70 }
+                PropertyChanges { target: buttonRow; visible: false }
+                PropertyChanges { target: selectedPathText; visible: true }
+            }
+        ]
+
+        Behavior on height {
+            NumberAnimation { duration: 200 }
+        }
+
         anchors{
             top: stateHasRecentRun.bottom
             topMargin: 10
@@ -60,6 +83,7 @@ Rectangle{
 
 
         RowLayout{
+            id: buttonRow
             spacing: 30
 
             anchors{
@@ -71,6 +95,13 @@ Rectangle{
             Components.Button{
                 _text: "Categorize Desktop"
                 _width: 200
+                onClicked: {
+                    selectedFolderPath = StandardPaths.standardLocations(StandardPaths.DesktopLocation)[0]
+                    selectedFolderPath = selectedFolderPath.replace(/^(file:\/{3})/,"")
+                    console.log("Desktop folder selected:", selectedFolderPath)
+                    stepOneContainerRectangle.state = "completed"
+                    // You can add additional logic here to handle the desktop folder selection
+                }
             }
 
             Texts.SubheadingText{
@@ -82,6 +113,21 @@ Rectangle{
                 _width: 220
                 _color: "#0B0C0E"
                 _textColor: "#A9A9A9"
+                onClicked: folderDialog.open() // Add this onClicked handler
+            }
+        }
+
+        Texts.SubheadingText{
+            id: selectedPathText
+            _text: "You chose the path: <b>" + selectedFolderPath + "</b>"
+            _color: "#FFFFFF"
+            visible: false
+            wrapMode: Text.WordWrap
+
+            anchors{
+                bottom: parent.bottom
+                bottomMargin: 15
+                horizontalCenter: parent.horizontalCenter
             }
 
         }
@@ -240,4 +286,23 @@ Rectangle{
             }
         }
     }
+
+    property string selectedFolderPath: ""
+
+    FolderDialog {
+        id: folderDialog
+        title: "Please choose a folder"
+        folder: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
+        onAccepted: {
+            selectedFolderPath = folderDialog.folder.toString()
+            // Remove the "file://" prefix if present
+            selectedFolderPath = selectedFolderPath.replace(/^(file:\/{3})/,"")
+            selectedFolderPath = decodeURIComponent(selectedFolderPath)
+            console.log("Selected folder:", selectedFolderPath)
+            stepOneContainerRectangle.state = "completed"
+            // You can add additional logic here to handle the selected folder
+        }
+    }
 }
+
+
