@@ -2,10 +2,13 @@ import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls 2.15
 import QtQuick.Dialogs
-import Qt.labs.platform 1.1 // For FolderDialog and StandardPaths
+import Qt.labs.platform 1.1
+
 
 import "../texts/" as Texts
 import "./" as Components
+
+import com.occ.FolderScanner 1.0
 
 
 Rectangle{
@@ -54,7 +57,13 @@ Rectangle{
                 name: "completed"
                 PropertyChanges { target: stepOneContainerRectangle; border.color: "#A7FB1F"; height: 70 }
                 PropertyChanges { target: buttonRow; visible: false }
-                PropertyChanges { target: selectedPathText; visible: true }
+                PropertyChanges { target: selectedPathText; visible: true; color: "#A7FB1F" }
+                StateChangeScript {
+                    script: {
+                        console.log("Scanning folder:", selectedFolderPath)
+                        folderScanner.scanFolder(selectedFolderPath)
+                    }
+                }
             }
         ]
 
@@ -100,7 +109,7 @@ Rectangle{
                     selectedFolderPath = selectedFolderPath.replace(/^(file:\/{3})/,"")
                     console.log("Desktop folder selected:", selectedFolderPath)
                     stepOneContainerRectangle.state = "completed"
-                    // You can add additional logic here to handle the desktop folder selection
+                    
                 }
             }
 
@@ -129,7 +138,6 @@ Rectangle{
                 bottomMargin: 15
                 horizontalCenter: parent.horizontalCenter
             }
-
         }
     }
 
@@ -301,6 +309,15 @@ Rectangle{
             console.log("Selected folder:", selectedFolderPath)
             stepOneContainerRectangle.state = "completed"
             // You can add additional logic here to handle the selected folder
+        }
+    }
+
+    // Add this at the end of the file
+    FolderScanner {
+        id: folderScanner
+        onScanCompleted: {
+            console.log("Scan completed. File extensions:", extensions)
+            // Here you can update your UI with the found extensions
         }
     }
 }

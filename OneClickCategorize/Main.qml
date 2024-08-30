@@ -11,7 +11,7 @@ Window{
 
     visible: true
     title: qsTr("Folder/Desktop Categorizer")
-    flags: Qt.FramelessWindowHint | Qt.Window
+    flags: Qt.Window
 
 
     FontLoader {
@@ -51,7 +51,6 @@ Window{
 
     Rectangle {
         color: "#141414"
-        radius: 25
         anchors.fill: parent
         Screens.Dashboard{
             anchors.fill: parent
