@@ -40,6 +40,7 @@ qt_add_qml_module(appOneClickCategorize
         QML_FILES components/FolderTextInput.qml
         SOURCES folderscanner.h folderscanner.cpp
         QML_FILES components/ExtensionChip.qml
+        QML_FILES test.json
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -62,4 +63,10 @@ install(TARGETS appOneClickCategorize
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+qt_add_resources(appOneClickCategorize "resources"
+    PREFIX "/"
+    FILES
+        test.json
 )

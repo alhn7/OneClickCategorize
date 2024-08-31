@@ -385,16 +385,20 @@ Rectangle{
         }
     }
 
-    // Add this at the end of the file
     FolderScanner {
-        id: folderScanner
-        onScanCompleted: {
-            if (stepOneContainerRectangle.state === "completed") {
-                console.log("Scan completed. File extensions:", extensions)
-                updateExtensionsDisplay(extensions)
-            }
+    id: folderScanner
+    onScanCompleted: function(extensions, folders) {
+        if (stepOneContainerRectangle.state === "completed") {
+            console.log("Scan completed. File extensions:", extensions)
+            console.log("Folders found:", folders)
+            updateExtensionsDisplay(extensions)
+            createFolders(folders)
         }
     }
+    onFolderForExtensionFound: function(extension, folder) {
+        addExtensionToFolder(extension, folder)
+    }
+}
 
     function updateExtensionsDisplay(newExtensions) {
         if (stepOneContainerRectangle.state === "completed") {
@@ -413,21 +417,63 @@ Rectangle{
                 extensionsFlow.visible = true
 
                 newExtensions.forEach(function(ext) {
-                    var component = Qt.createComponent("ExtensionChip.qml")
-                    if (component.status === Component.Ready) {
-                        var chip = component.createObject(extensionsFlow, {
-                            _text: ext,
-                            originalParent: extensionsFlow,
-                            isInFileTypesFolder: true
-                        })
-                        chip.x = 0
-                        chip.y = 0
+                    var folder = folderScanner.getFolderForExtension(ext)
+                    if (!folder) {
+                        var component = Qt.createComponent("ExtensionChip.qml")
+                        if (component.status === Component.Ready) {
+                            var chip = component.createObject(extensionsFlow, {
+                                _text: ext,
+                                originalParent: extensionsFlow,
+                                isInFileTypesFolder: true
+                            })
+                            chip.x = 0
+                            chip.y = 0
+                        }
+                    } else {
+                        // Find the corresponding folder and add the extension
+                        for (var i = 0; i < foldersModel.count; i++) {
+                            if (foldersModel.get(i).folderName === folder) {
+                                var folderItem = foldersRowLayout.itemAtIndex(i)
+                                if (folderItem) {
+                                    folderItem.addExtension(ext)
+                                }
+                                break
+                            }
+                        }
                     }
                 })
             }
 
             // Change border color here as well
             scanExtensionsFolder.border.color = "#A7FB1F"
+        }
+    }
+
+    function addExtensionToFolder(extension, folder) {
+        if (!folder) {
+            var component = Qt.createComponent("ExtensionChip.qml")
+            if (component.status === Component.Ready) {
+                var chip = component.createObject(extensionsFlow, {
+                    _text: extension,
+                    originalParent: extensionsFlow,
+                    isInFileTypesFolder: true
+                })
+                chip.x = 0
+                chip.y = 0
+            }
+        } else {
+            // Add underscore to the folder name for comparison
+            var modifiedFolder = "_" + folder
+            // Find the corresponding folder and add the extension
+            for (var i = 0; i < foldersModel.count; i++) {
+                if (foldersModel.get(i).folderName === modifiedFolder) {
+                    var folderItem = foldersRowLayout.itemAtIndex(i)
+                    if (folderItem) {
+                        folderItem.addExtension(extension)
+                    }
+                    break
+                }
+            }
         }
     }
 
@@ -442,18 +488,23 @@ Rectangle{
         }
     }
 
-    function createFolders() {
-        if (stepOneContainerRectangle.state === "completed") {
-            foldersModel.clear()  // Clear existing folders
-            for (var i = 0; i < 3; i++) {
-                foldersModel.append({ folderName: "TODO" + (i + 1) })
-            }
+function createFolders(folders) {
+    if (stepOneContainerRectangle.state === "completed") {
+        foldersModel.clear()  // Clear existing folders
+        if (folders && folders.length > 0) {
+            folders.forEach(function(folderName) {
+                // Add underscore to the beginning of the folder name
+                var modifiedFolderName = "_" + folderName
+                foldersModel.append({ folderName: modifiedFolderName })
+            })
+        } else {
+            console.log("No folders to create")
         }
     }
+}
 
     function onStep1Completed() {
         stepOneContainerRectangle.state = "completed"
-        createFolders()
         folderScanner.scanFolder(selectedFolderPath)
     }
 
