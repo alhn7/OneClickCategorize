@@ -12,15 +12,13 @@ import com.occ.FolderScanner 1.0
 
 
 Rectangle{
-    id: root
+    property string selectedFolderPath: ""
+    property bool showCategorizeButton: false
     width: 710
     height: 400
 
     color: "#1E1E1E"
     radius: 15
-
-    property string selectedFolderPath: ""
-    property var extensions: []  // Add this line to store the extensions
 
     Texts.HeadingText{
         id: stateHasRecentRun
@@ -112,7 +110,8 @@ Rectangle{
                     selectedFolderPath = StandardPaths.standardLocations(StandardPaths.DesktopLocation)[0]
                     selectedFolderPath = selectedFolderPath.replace(/^(file:\/{3})/,"")
                     console.log("Desktop folder selected:", selectedFolderPath)
-                    onStep1Completed()
+                    stepOneContainerRectangle.state = "completed"
+                    
                 }
             }
 
@@ -167,15 +166,11 @@ Rectangle{
             leftMargin: 20
         }
 
-        visible: stepOneContainerRectangle.state === "completed"
-        opacity: visible ? 1 : 0
-
-        Behavior on opacity {
-            NumberAnimation { duration: 200 }
-        }
-
         ListModel {
             id: foldersModel
+            ListElement { folderName: "TODO1" }
+            ListElement { folderName: "TODO2" }
+            ListElement { folderName: "TODO3" }
         }
 
         Components.Button {
@@ -242,6 +237,7 @@ Rectangle{
                 height: parent.height - 40 // -30 -> Horizontal Scrollbar
 
                 model: foldersModel
+
                 delegate: Folder {
                     _folderName: folderName
                     Layout.alignment: Qt.AlignLeft
@@ -373,7 +369,10 @@ Rectangle{
             selectedFolderPath = selectedFolderPath.replace(/^(file:\/{3})/,"")
             selectedFolderPath = decodeURIComponent(selectedFolderPath)
             console.log("Selected folder:", selectedFolderPath)
-            onStep1Completed()
+            stepOneContainerRectangle.state = "completed"
+            // You can add additional logic here to handle the selected folder
+            createFolders()
+            console.log("Folders created")
         }
     }
 
@@ -381,50 +380,47 @@ Rectangle{
     FolderScanner {
         id: folderScanner
         onScanCompleted: {
-            if (stepOneContainerRectangle.state === "completed") {
-                console.log("Scan completed. File extensions:", extensions)
-                updateExtensionsDisplay(extensions)
-            }
+            console.log("Scan completed. File extensions:", extensions)
+            updateExtensionsDisplay(extensions)
+            scanExtensionsFolder.border.color = "#A7FB1F"  // Change border color on scan completion
         }
     }
 
-    function updateExtensionsDisplay(newExtensions) {
-        if (stepOneContainerRectangle.state === "completed") {
-            // Clear existing extensions
-            for (var i = extensionsFlow.children.length; i > 0; i--) {
-                extensionsFlow.children[i-1].destroy()
-            }
-
-            if (newExtensions.length === 0) {
-                // Show "No files found" text
-                noFilesFoundText.visible = true
-                extensionsFlow.visible = false
-            } else {
-                // Hide "No files found" text and show extensions
-                noFilesFoundText.visible = false
-                extensionsFlow.visible = true
-
-                newExtensions.forEach(function(ext) {
-                    var component = Qt.createComponent("ExtensionChip.qml")
-                    if (component.status === Component.Ready) {
-                        var chip = component.createObject(extensionsFlow, {
-                            _text: ext,
-                            originalParent: extensionsFlow,
-                            isInFileTypesFolder: true
-                        })
-                        chip.x = 0
-                        chip.y = 0
-                    }
-                })
-            }
-
-            // Change border color here as well
-            scanExtensionsFolder.border.color = "#A7FB1F"
+    function updateExtensionsDisplay(extensions) {
+        // Clear existing extensions
+        for (var i = extensionsFlow.children.length; i > 0; i--) {
+            extensionsFlow.children[i-1].destroy()
         }
+
+        if (extensions.length === 0) {
+            // Show "No files found" text
+            noFilesFoundText.visible = true
+            extensionsFlow.visible = false
+        } else {
+            // Hide "No files found" text and show extensions
+            noFilesFoundText.visible = false
+            extensionsFlow.visible = true
+
+            extensions.forEach(function(ext) {
+                var component = Qt.createComponent("ExtensionChip.qml")
+                if (component.status === Component.Ready) {
+                    var chip = component.createObject(extensionsFlow, {
+                        _text: ext,
+                        originalParent: extensionsFlow,
+                        isInFileTypesFolder: true
+                    })
+                    chip.x = 0
+                    chip.y = 0
+                }
+            })
+        }
+
+        // Change border color here as well, in case onScanCompleted doesn't trigger for some reason
+        scanExtensionsFolder.border.color = "#A7FB1F"
     }
 
     Repeater {
-        model: root.extensions  // Use the extensions property from root
+        model: extensions
         delegate: ExtensionChip {
             objectName: "extensionChip"
             _text: modelData
@@ -434,21 +430,41 @@ Rectangle{
         }
     }
 
+    function onExtensionAdded() {
+        console.log("Extension added to a folder")
+        startCategorizeButton.visible = true
+    }
+
     function createFolders() {
-        if (stepOneContainerRectangle.state === "completed") {
-            foldersModel.clear()  // Clear existing folders
-            for (var i = 0; i < 3; i++) {
-                foldersModel.append({ folderName: "TODO" + (i + 1) })
+        for (var i = 0; i < 3; i++) {
+            var folderComponent = Qt.createComponent("Folder.qml")
+            if (folderComponent.status === Component.Ready) {
+                var folder = folderComponent.createObject(foldersRowLayout.contentItem, {
+                    _folderName: "TODO" + (i + 1)
+                })
+                folder.extensionAdded.connect(onExtensionAdded)
             }
         }
     }
 
-    function onStep1Completed() {
-        stepOneContainerRectangle.state = "completed"
-        createFolders()
-        folderScanner.scanFolder(selectedFolderPath)
-    }
+    Components.Button {
+        id: startCategorizeButton
+        _text: "Start Categorizing"
+        _width: parent.width - 40  // Full width minus margins
+        _height: 40
+        visible: false
 
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 20
+            horizontalCenter: parent.horizontalCenter
+        }
+
+        onClicked: {
+            // Add categorization logic here
+            console.log("Start Categorizing button clicked")
+        }
+    }
 }
 
 

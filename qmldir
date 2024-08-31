@@ -1,0 +1,18 @@
+module OneClickCategorize
+typeinfo appOneClickCategorize.qmltypes
+prefer :/qt/qml/OneClickCategorize/
+Main 1.0 Main.qml
+HeadingText 1.0 texts/HeadingText.qml
+SubheadingText 1.0 texts/SubheadingText.qml
+InputArea 1.0 components/InputArea.qml
+InputText 1.0 texts/InputText.qml
+Button 1.0 components/Button.qml
+ButtonText 1.0 texts/ButtonText.qml
+LoginScreen 1.0 screens/LoginScreen.qml
+Dashboard 1.0 screens/Dashboard.qml
+DashboardState_NoRecentRun 1.0 components/DashboardState_NoRecentRun.qml
+DashboardState_HasRecentRun 1.0 components/DashboardState_HasRecentRun.qml
+Folder 1.0 components/Folder.qml
+FolderTextInput 1.0 components/FolderTextInput.qml
+ExtensionChip 1.0 components/ExtensionChip.qml
+
