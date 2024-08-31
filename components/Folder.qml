@@ -53,6 +53,7 @@ Rectangle {
         width: parent.width - 20
         anchors {
             top: folderTextInput.bottom
+            topMargin: 5
             bottom: parent.bottom
             bottomMargin: 10
             horizontalCenter: parent.horizontalCenter
@@ -61,27 +62,55 @@ Rectangle {
     }
 
     function addExtension(extension) {
-        if (typeof extension === 'string') {
-            // If extension is a string, create a new ExtensionChip
-            var component = Qt.createComponent("ExtensionChip.qml")
-            if (component.status === Component.Ready) {
-                var chip = component.createObject(extensionsFlow, {
-                    _text: extension,
-                    originalParent: extensionsFlow,
-                    isInFileTypesFolder: false
-                })
-                droppedExtensions.push(extension)
+        console.log("DEBUG: Adding extension to folder:", _folderName, "Extension:", extension)
+        var extensionText = typeof extension === 'string' ? extension : extension._text
+        var existingChip = null
+
+        // Check if the extension already exists in this folder
+        for (var i = 0; i < extensionsFlow.children.length; i++) {
+            if (extensionsFlow.children[i]._text === extensionText) {
+                existingChip = extensionsFlow.children[i]
+                break
+            }
+        }
+
+        if (existingChip) {
+            console.log("DEBUG: Extension already exists in folder:", _folderName)
+            if (typeof extension !== 'string' && extension !== existingChip) {
+                // If it's a different ExtensionChip object, destroy the existing one and add the new one
+                existingChip.destroy()
+                extension.parent = extensionsFlow
+                extension.x = 0
+                extension.y = 0
+            } else {
+                // If it's the same object or a string, just ensure it's visible and positioned correctly
+                existingChip.visible = true
+                existingChip.x = 0
+                existingChip.y = 0
             }
         } else {
-            // If extension is an object (existing ExtensionChip), move it
-            droppedExtensions.push(extension._text)
-            extension.parent = extensionsFlow
-            extension.anchors.fill = undefined
-            extension.x = 0
-            extension.y = 0
-            extension.isInFileTypesFolder = false
+            // If the extension doesn't exist in this folder, create a new chip or move the existing one
+            if (typeof extension === 'string') {
+                var component = Qt.createComponent("ExtensionChip.qml")
+                if (component.status === Component.Ready) {
+                    var chip = component.createObject(extensionsFlow, {
+                        _text: extensionText,
+                        originalParent: extensionsFlow,
+                        isInFileTypesFolder: false
+                    })
+                    droppedExtensions.push(extensionText)
+                    console.log("DEBUG: New ExtensionChip created in folder:", _folderName)
+                } else {
+                    console.error("DEBUG: Error creating ExtensionChip:", component.errorString())
+                }
+            } else {
+                extension.parent = extensionsFlow
+                extension.x = 0
+                extension.y = 0
+                droppedExtensions.push(extensionText)
+                console.log("DEBUG: Existing ExtensionChip moved to folder:", _folderName)
+            }
         }
-        console.log("Extension added to folder:", _folderName)
         extensionAdded()
     }
 }

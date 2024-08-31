@@ -86,14 +86,14 @@ Item {
             root.isDragging = false
             root.z = 0
             var dropTarget = root.Drag.target
-            console.log("Drop target:", dropTarget)
+            console.log("DEBUG: Drop target:", dropTarget)
             
             if (dropTarget && dropTarget.parent && dropTarget.parent.isFolder === true) {
-                console.log("Drop target is a folder, adding extension:", root._text)
+                console.log("DEBUG: Drop target is a folder, adding extension:", root._text)
                 dropTarget.parent.addExtension(root)
-                isInFileTypesFolder = false
+                // Don't destroy the chip here, let the folder handle it
             } else {
-                console.log("Drop target is not a folder, resetting position.")
+                console.log("DEBUG: Drop target is not a folder, resetting position.")
                 root.x = 0
                 root.y = 0
                 root.parent = root.originalParent
@@ -116,13 +116,13 @@ Item {
         radius: 4
         height: tooltipText.height + 8
         width: tooltipText.width + 16
-        
+
         anchors {
             bottom: parent.top
             bottomMargin: 4
             horizontalCenter: parent.horizontalCenter
         }
-        
+
         Text {
             id: tooltipText
             text: "Move extension to a folder"

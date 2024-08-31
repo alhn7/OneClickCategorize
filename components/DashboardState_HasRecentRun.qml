@@ -386,19 +386,21 @@ Rectangle{
     }
 
     FolderScanner {
-    id: folderScanner
-    onScanCompleted: function(extensions, folders) {
-        if (stepOneContainerRectangle.state === "completed") {
-            console.log("Scan completed. File extensions:", extensions)
-            console.log("Folders found:", folders)
-            updateExtensionsDisplay(extensions)
-            createFolders(folders)
+        id: folderScanner
+        onScanCompleted: function(extensions, folders) {
+            if (stepOneContainerRectangle.state === "completed") {
+                console.log("DEBUG: Scan completed. File extensions:", extensions)
+                console.log("DEBUG: Folders found:", folders)
+                createFolders(folders).then(() => {
+                    console.log("DEBUG: Folders created, now adding extensions")
+                    extensions.forEach(function(extension) {
+                        var folder = getFolderForExtension(extension)
+                        addExtensionToFolder(extension, folder)
+                    })
+                })
+            }
         }
     }
-    onFolderForExtensionFound: function(extension, folder) {
-        addExtensionToFolder(extension, folder)
-    }
-}
 
     function updateExtensionsDisplay(newExtensions) {
         if (stepOneContainerRectangle.state === "completed") {
@@ -450,6 +452,7 @@ Rectangle{
     }
 
     function addExtensionToFolder(extension, folder) {
+        console.log("DEBUG: addExtensionToFolder called with extension:", extension, "folder:", folder)
         if (!folder) {
             var component = Qt.createComponent("ExtensionChip.qml")
             if (component.status === Component.Ready) {
@@ -460,22 +463,30 @@ Rectangle{
                 })
                 chip.x = 0
                 chip.y = 0
+                console.log("DEBUG: ExtensionChip created in extensionsFlow")
             }
         } else {
-            // Add underscore to the folder name for comparison
             var modifiedFolder = "_" + folder
-            // Find the corresponding folder and add the extension
-            for (var i = 0; i < foldersModel.count; i++) {
-                if (foldersModel.get(i).folderName === modifiedFolder) {
-                    var folderItem = foldersRowLayout.itemAtIndex(i)
-                    if (folderItem) {
-                        folderItem.addExtension(extension)
+            Qt.callLater(function() {
+                for (var i = 0; i < foldersModel.count; i++) {
+                    if (foldersModel.get(i).folderName === modifiedFolder) {
+                        var folderItem = foldersRowLayout.itemAtIndex(i)
+                        if (folderItem) {
+                            folderItem.addExtension(extension)
+                            console.log("DEBUG: Extension added to folder:", modifiedFolder)
+                        } else {
+                            console.error("DEBUG: Folder item not found for:", modifiedFolder)
+                        }
+                        break
                     }
-                    break
                 }
-            }
+            })
         }
     }
+
+function getFolderForExtension(extension) {
+    return folderScanner.getFolderForExtension(extension)
+}
 
     Repeater {
         model: root.extensions  // Use the extensions property from root
@@ -488,25 +499,34 @@ Rectangle{
         }
     }
 
-function createFolders(folders) {
-    if (stepOneContainerRectangle.state === "completed") {
-        foldersModel.clear()  // Clear existing folders
-        if (folders && folders.length > 0) {
-            folders.forEach(function(folderName) {
-                // Add underscore to the beginning of the folder name
-                var modifiedFolderName = "_" + folderName
-                foldersModel.append({ folderName: modifiedFolderName })
-            })
-        } else {
-            console.log("No folders to create")
-        }
+    function createFolders(folders) {
+        console.log("DEBUG: Creating folders:", folders)
+        return new Promise((resolve) => {
+            if (stepOneContainerRectangle.state === "completed") {
+                foldersModel.clear()  // Clear existing folders
+                if (folders && folders.length > 0) {
+                    folders.forEach(function(folderName) {
+                        var modifiedFolderName = "_" + folderName
+                        foldersModel.append({ folderName: modifiedFolderName })
+                        console.log("DEBUG: Folder created:", modifiedFolderName)
+                    })
+                } else {
+                    console.log("DEBUG: No folders to create")
+                }
+            }
+            // Use a small delay to ensure the view has updated
+            Qt.callLater(resolve)
+        })
     }
-}
 
     function onStep1Completed() {
+    if (stepOneContainerRectangle.state !== "completed") {
         stepOneContainerRectangle.state = "completed"
         folderScanner.scanFolder(selectedFolderPath)
     }
+}
+
+    
 
 }
 
