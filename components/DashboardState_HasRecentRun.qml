@@ -246,8 +246,9 @@ Rectangle{
                     _folderName: folderName
                     Layout.alignment: Qt.AlignLeft
                     Layout.fillWidth: true
-                    Component.onCompleted: {
-                        extensionAdded.connect(root.onExtensionAdded)
+                    onExtensionAdded: {
+                        console.log("Extension added to folder:", _folderName)
+                        // Add any additional logic you want to execute when an extension is added
                     }
                 }
 
@@ -278,6 +279,13 @@ Rectangle{
                         border{
                             width: 1
                             color: "#A7FB1F"
+                        }
+
+                        Text {
+                            text: "Scroll me"
+                            color: "#A7FB1F"
+                            font.pixelSize: 10
+                            anchors.centerIn: parent
                         }
                     }
 

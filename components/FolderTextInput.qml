@@ -17,7 +17,7 @@ Item{
         horizontalAlignment: Text.AlignHCenter
         
         font {
-            family: poppinsRegular
+            family: poppinsRegular.name
             pixelSize: 12
         }
 
@@ -47,7 +47,7 @@ Item{
         maximumLength: maxCharacters
         
         font {
-            family: poppinsRegular
+            family: poppinsRegular.name
             pixelSize: 12
         }
 
