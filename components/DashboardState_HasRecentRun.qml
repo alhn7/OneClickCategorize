@@ -8,7 +8,7 @@ import Qt.labs.platform 1.1
 import "../texts/" as Texts
 import "./" as Components
 
-import com.occ.FolderScanner 1.0
+// import com.occ.FolderScanner 1.0
 
 
 Rectangle{
@@ -62,14 +62,17 @@ Rectangle{
                 PropertyChanges { target: stepOneContainerRectangle; border.color: "#A7FB1F"; height: 70 }
                 PropertyChanges { target: buttonRow; visible: false }
                 PropertyChanges { target: selectedPathText; visible: true; color: "#A7FB1F" }
-                StateChangeScript {
-                    script: {
-                        console.log("Scanning folder:", selectedFolderPath)
-                        folderScanner.scanFolder(selectedFolderPath)
-                    }
-                }
             }
         ]
+
+        onStateChanged: {
+            if (state == "completed") {
+                var scanResults = _folderScanner.scanFolder(selectedFolderPath)
+                handleScanResults(scanResults)
+            } else {
+                console.log(state)
+            }
+        }
 
         Behavior on height {
             NumberAnimation { duration: 200 }
@@ -111,8 +114,7 @@ Rectangle{
                 onClicked: {
                     selectedFolderPath = StandardPaths.standardLocations(StandardPaths.DesktopLocation)[0]
                     selectedFolderPath = selectedFolderPath.replace(/^(file:\/{3})/,"")
-                    console.log("Desktop folder selected:", selectedFolderPath)
-                    onStep1Completed()
+                    stepOneContainerRectangle.state = "completed"
                 }
             }
 
@@ -125,7 +127,7 @@ Rectangle{
                 _width: 220
                 _color: "#0B0C0E"
                 _textColor: "#A9A9A9"
-                onClicked: folderDialog.open() // Add this onClicked handler
+                onClicked: folderDialog.open()
             }
         }
 
@@ -380,27 +382,26 @@ Rectangle{
             // Remove the "file://" prefix if present
             selectedFolderPath = selectedFolderPath.replace(/^(file:\/{3})/,"")
             selectedFolderPath = decodeURIComponent(selectedFolderPath)
-            console.log("Selected folder:", selectedFolderPath)
-            onStep1Completed()
+            stepOneContainerRectangle.state = "completed"
         }
     }
 
-    FolderScanner {
-        id: folderScanner
-        onScanCompleted: function(extensions, folders) {
-            if (stepOneContainerRectangle.state === "completed") {
-                console.log("DEBUG: Scan completed. File extensions:", extensions)
-                console.log("DEBUG: Folders found:", folders)
-                createFolders(folders).then(() => {
-                    console.log("DEBUG: Folders created, now adding extensions")
-                    extensions.forEach(function(extension) {
-                        var folder = getFolderForExtension(extension)
-                        addExtensionToFolder(extension, folder)
-                    })
-                })
-            }
-        }
-    }
+    // FolderScanner {
+    //     id: folderScanner
+    //     onScanCompleted: function(extensions, folders) {
+    //         if (stepOneContainerRectangle.state === "completed") {
+    //             console.log("DEBUG: Scan completed. File extensions:", extensions)
+    //             console.log("DEBUG: Folders found:", folders)
+    //             createFolders(folders).then(() => {
+    //                 console.log("DEBUG: Folders created, now adding extensions")
+    //                 extensions.forEach(function(extension) {
+    //                     var folder = getFolderForExtension(extension)
+    //                     addExtensionToFolder(extension, folder)
+    //                 })
+    //             })
+    //         }
+    //     }
+    // }
 
     function updateExtensionsDisplay(newExtensions) {
         if (stepOneContainerRectangle.state === "completed") {
@@ -410,36 +411,39 @@ Rectangle{
             }
 
             if (newExtensions.length === 0) {
-                // Show "No files found" text
                 noFilesFoundText.visible = true
                 extensionsFlow.visible = false
             } else {
-                // Hide "No files found" text and show extensions
                 noFilesFoundText.visible = false
                 extensionsFlow.visible = true
 
+                var addedExtensions = {}  // Object to track added extensions
+
                 newExtensions.forEach(function(ext) {
-                    var folder = folderScanner.getFolderForExtension(ext)
-                    if (!folder) {
-                        var component = Qt.createComponent("ExtensionChip.qml")
-                        if (component.status === Component.Ready) {
-                            var chip = component.createObject(extensionsFlow, {
-                                _text: ext,
-                                originalParent: extensionsFlow,
-                                isInFileTypesFolder: true
-                            })
-                            chip.x = 0
-                            chip.y = 0
-                        }
-                    } else {
-                        // Find the corresponding folder and add the extension
-                        for (var i = 0; i < foldersModel.count; i++) {
-                            if (foldersModel.get(i).folderName === folder) {
-                                var folderItem = foldersRowLayout.itemAtIndex(i)
-                                if (folderItem) {
-                                    folderItem.addExtension(ext)
+                    if (!addedExtensions[ext]) {  // Check if extension has already been added
+                        addedExtensions[ext] = true  // Mark extension as added
+                        var folder = folderScanner.getFolderForExtension(ext)
+                        if (!folder) {
+                            var component = Qt.createComponent("ExtensionChip.qml")
+                            if (component.status === Component.Ready) {
+                                var chip = component.createObject(extensionsFlow, {
+                                    _text: ext,
+                                    originalParent: extensionsFlow,
+                                    isInFileTypesFolder: true
+                                })
+                                chip.x = 0
+                                chip.y = 0
+                            }
+                        } else {
+                            // Find the corresponding folder and add the extension
+                            for (var i = 0; i < foldersModel.count; i++) {
+                                if (foldersModel.get(i).folderName === folder) {
+                                    var folderItem = foldersRowLayout.itemAtIndex(i)
+                                    if (folderItem) {
+                                        folderItem.addExtension(ext)
+                                    }
+                                    break
                                 }
-                                break
                             }
                         }
                     }
@@ -451,38 +455,6 @@ Rectangle{
         }
     }
 
-    function addExtensionToFolder(extension, folder) {
-        console.log("DEBUG: addExtensionToFolder called with extension:", extension, "folder:", folder)
-        if (!folder) {
-            var component = Qt.createComponent("ExtensionChip.qml")
-            if (component.status === Component.Ready) {
-                var chip = component.createObject(extensionsFlow, {
-                    _text: extension,
-                    originalParent: extensionsFlow,
-                    isInFileTypesFolder: true
-                })
-                chip.x = 0
-                chip.y = 0
-                console.log("DEBUG: ExtensionChip created in extensionsFlow")
-            }
-        } else {
-            var modifiedFolder = "_" + folder
-            Qt.callLater(function() {
-                for (var i = 0; i < foldersModel.count; i++) {
-                    if (foldersModel.get(i).folderName === modifiedFolder) {
-                        var folderItem = foldersRowLayout.itemAtIndex(i)
-                        if (folderItem) {
-                            folderItem.addExtension(extension)
-                            console.log("DEBUG: Extension added to folder:", modifiedFolder)
-                        } else {
-                            console.error("DEBUG: Folder item not found for:", modifiedFolder)
-                        }
-                        break
-                    }
-                }
-            })
-        }
-    }
 
 function getFolderForExtension(extension) {
     return folderScanner.getFolderForExtension(extension)
@@ -500,34 +472,71 @@ function getFolderForExtension(extension) {
     }
 
     function createFolders(folders) {
-        console.log("DEBUG: Creating folders:", folders)
+        console.log("DEBUG: Creating folders:", JSON.stringify(folders))
         return new Promise((resolve) => {
-            if (stepOneContainerRectangle.state === "completed") {
-                foldersModel.clear()  // Clear existing folders
-                if (folders && folders.length > 0) {
-                    folders.forEach(function(folderName) {
-                        var modifiedFolderName = "_" + folderName
-                        foldersModel.append({ folderName: modifiedFolderName })
-                        console.log("DEBUG: Folder created:", modifiedFolderName)
-                    })
-                } else {
-                    console.log("DEBUG: No folders to create")
-                }
-            }
+            foldersModel.clear()  // Clear existing folders
+            folders.forEach(function(folderName) {
+                console.log("DEBUG: Adding folder to model:", folderName)
+                foldersModel.append({ folderName: folderName })
+            })
+            console.log("DEBUG: Folder model count after creation:", foldersModel.count)
             // Use a small delay to ensure the view has updated
-            Qt.callLater(resolve)
+            Qt.callLater(() => {
+                console.log("DEBUG: Folders created, resolving promise")
+                resolve()
+            })
         })
     }
 
-    function onStep1Completed() {
-    if (stepOneContainerRectangle.state !== "completed") {
+    function completeStep1() {
         stepOneContainerRectangle.state = "completed"
-        folderScanner.scanFolder(selectedFolderPath)
+        currentStep = 2
+        var scanResults = _folderScanner.scanFolder(selectedFolderPath)
+        handleScanResults(scanResults)
+    }
+
+    function handleScanResults(results) {
+        console.log("DEBUG: Scan completed. File extensions:", results.extensions)
+        console.log("DEBUG: Folders found:", results.folders)
+        createFolders(results.folders).then(() => {
+            console.log("DEBUG: Folders created, now adding extensions")
+            results.extensions.forEach(function(extension) {
+                var folder = _folderScanner.getFolderForExtension(extension)
+                addExtensionToFolder(extension, folder)
+            })
+        })
+    }
+
+
+    function addExtensionToFolder(extension, folder) {
+        console.log("DEBUG: Adding extension", extension, "to folder", folder)
+        if (!folder) {
+            console.log("DEBUG: No folder specified, adding to File Types area")
+            var component = Qt.createComponent("ExtensionChip.qml")
+            if (component.status === Component.Ready) {
+                var chip = component.createObject(extensionsFlow, {
+                    _text: extension,
+                    originalParent: extensionsFlow,
+                    isInFileTypesFolder: true
+                })
+                console.log("DEBUG: ExtensionChip created in File Types area")
+            } else {
+                console.error("DEBUG: Error creating ExtensionChip:", component.errorString())
+            }
+        } else {
+            console.log("DEBUG: Searching for folder", folder, "in model")
+            for (var i = 0; i < foldersModel.count; i++) {
+                if (foldersModel.get(i).folderName === folder) {
+                    var folderItem = foldersRowLayout.itemAtIndex(i)
+                    if (folderItem) {
+                        console.log("DEBUG: Found folder item, adding extension")
+                        folderItem.addExtension(extension)
+                    } else {
+                        console.error("DEBUG: Folder item not found for index", i)
+                    }
+                    break
+                }
+            }
+        }
     }
 }
-
-    
-
-}
-
-

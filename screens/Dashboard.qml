@@ -2,7 +2,6 @@ import QtQuick 2.15
 import "../components/" as Components
 
 Item {
-
     Image{
         source: "../assets/logo/logo_placeholder.png"
 
@@ -13,7 +12,6 @@ Item {
             topMargin: 20
         }
     }
-
 
     Components.DashboardState_HasRecentRun{
         anchors{

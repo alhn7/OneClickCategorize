@@ -8,41 +8,58 @@
 
 FolderScanner::FolderScanner(QObject *parent) : QObject(parent) {}
 
-void FolderScanner::scanFolder(const QString &path)
+QVariantMap FolderScanner::scanFolder(const QString &path)
 {
     QDir dir(path);
-    QStringList extensions;
     QSet<QString> uniqueExtensions;
     QSet<QString> uniqueFolders;
+
+    qDebug() << "Scanning folder:" << path;
 
     if (dir.exists())
     {
         QFileInfoList fileList = dir.entryInfoList(QDir::Files);
+        qDebug() << "Number of files found:" << fileList.size();
+
         for (const QFileInfo &fileInfo : fileList)
         {
             QString extension = fileInfo.suffix().toLower();
-            if (!extension.isEmpty() && !uniqueExtensions.contains(extension))
+            if (!extension.isEmpty())
             {
                 uniqueExtensions.insert(extension);
-                extensions.append(extension);
                 QString folder = getFolderForExtension(extension);
                 if (!folder.isEmpty())
                 {
                     uniqueFolders.insert(folder);
                 }
-                emit folderForExtensionFound(extension, folder);
             }
         }
     }
-
-    // Convert QSet to QStringList
-    QStringList foldersList;
-    for (const QString &folder : uniqueFolders)
+    else
     {
-        foldersList.append(folder);
+        qDebug() << "Directory does not exist:" << path;
     }
 
-    emit scanCompleted(extensions, foldersList);
+    QVariantList extensionsList;
+    for (const QString &extension : uniqueExtensions)
+    {
+        extensionsList.append(QVariant(extension));
+    }
+
+    QVariantList foldersList;
+    for (const QString &folder : uniqueFolders)
+    {
+        foldersList.append(QVariant(folder));
+    }
+
+    qDebug() << "Scan completed. Unique extensions:" << extensionsList;
+    qDebug() << "Unique folders:" << foldersList;
+
+    QVariantMap result;
+    result["extensions"] = extensionsList;
+    result["folders"] = foldersList;
+
+    return result;
 }
 
 void FolderScanner::loadExtensionMap()
